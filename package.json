@@ -1,0 +1,33 @@
+{
+  "name": "scheduler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "start:server": "nodemon src/index.js",
+    "test": "jest --watchAll --runInBand --verbose",
+    "test:ci": "jest --forceExit --detectOpenHandles --maxWorkers=10",
+    "commit": "bash scripts/commit.sh"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "7.18.0",
+    "body-parser": "2.2.2",
+    "compression": "1.8.1",
+    "cookie-parser": "1.4.7",
+    "cookie-session": "2.1.1",
+    "express": "4.22.1",
+    "express-async-errors": "^3.1.1",
+    "helmet": "8.1.0",
+    "mongoose": "8.10.0",
+    "nodemon": "3.1.11",
+    "test_swe_common": "1.0.8"
+  },
+  "devDependencies": {
+    "jest": "29.4.2",
+    "mongodb-memory-server": "10.1.3",
+    "supertest": "6.3.3"
+  }
+}
