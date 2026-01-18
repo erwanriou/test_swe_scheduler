@@ -5,4 +5,4 @@ const app = require("./app")
 // TODO transaction("Scheduler")
 
 // LISTEN APP
-app.listen(3000, () => console.log("Architect listening on port 3000!"))
+app.listen(3000, () => console.log("Scheduler listening on port 3000!"))
