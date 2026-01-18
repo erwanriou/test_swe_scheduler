@@ -7,8 +7,8 @@ const cookieSession = require("cookie-session")
 const cookieParser = require("cookie-parser")
 const { isError } = require("test_swe_common")
 
-// IMPORT ROUTES
-// TODO const routes = require("./routes")
+// IMPORT CRONS
+require("./jobs")
 
 // LAUNCH EXPRESS
 const app = express()
@@ -27,7 +27,6 @@ app.use(compression())
 // USE ROUTES
 app.get("/", (_, res) => res.status(200).send("Scheduler"))
 app.get("/healthz.js", (_, res) => res.status(200).send("Healthz Check"))
-// TODO routes.map(route => app.use("/", route))
 
 // USE CUSTOM MIDDLWWARE
 app.use(isError)
