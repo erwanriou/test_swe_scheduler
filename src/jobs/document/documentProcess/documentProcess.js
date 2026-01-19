@@ -13,6 +13,7 @@ const { storage } = require("../../../services/googleStorage")
 const { NatsWrapper } = require("../../../services/natsWrapper")
 const { DocumentUpdatedPub } = require("../../../events/publishers/documentUpdatedPub")
 const { BatchUpdatedPub } = require("../../../events/publishers/batchUpdatedPub")
+const { BatchNotifiedPub } = require("../../../events/publishers/batchNotifiedPub")
 
 // HELPERS
 const getGcsHash = async key => {
@@ -84,10 +85,10 @@ cron.define(
           // UPDATE DOCUMENT STATUS DEPENDING OF HASH STATE
           if (seen.has(hash)) {
             localDuplicated += 1
-            await document.set({ processStatus: "DUPLICATED" }).save()
+            await document.set({ processStatus: "DUPLICATED", uploadStatus: "DISCARDED" }).save()
           } else {
             seen.add(hash)
-            await document.set({ processStatus: "VALIDATED" }).save()
+            await document.set({ processStatus: "VALIDATED", uploadStatus: "VERIFIED" }).save()
           }
 
           localProcessed += 1
@@ -112,10 +113,11 @@ cron.define(
       // IF FULLY PROCESSED, MARK DONE
       if (batch.totals.processedFiles >= batch.totals.expectedFiles) {
         await batch.set({ status: "DONE" }).save()
+        await new BatchUpdatedPub(NatsWrapper).publish({ batch, message: "BATCH_PROCESSED" })
       }
 
       // GENERATE BATCH EVENT
-      await new BatchUpdatedPub(NatsWrapper).publish(batch)
+      await new BatchNotifiedPub(NatsWrapper).publish(batch)
 
       console.log(
         `[CRON] batch ${batch._id} processed=${localProcessed} duplicated=${localDuplicated} totals=${batch.totals.processedFiles}/${batch.totals.expectedFiles}`
