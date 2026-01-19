@@ -113,11 +113,11 @@ cron.define(
       // IF FULLY PROCESSED, MARK DONE
       if (batch.totals.processedFiles >= batch.totals.expectedFiles) {
         await batch.set({ status: "DONE" }).save()
-        await new BatchUpdatedPub(NatsWrapper).publish({ batch, message: "BATCH_PROCESSED" })
+        await new BatchNotifiedPub(NatsWrapper).publish({ batch, message: "BATCH_PROCESSED" })
       }
 
       // GENERATE BATCH EVENT
-      await new BatchNotifiedPub(NatsWrapper).publish(batch)
+      await new BatchUpdatedPub(NatsWrapper).publish(batch)
 
       console.log(
         `[CRON] batch ${batch._id} processed=${localProcessed} duplicated=${localDuplicated} totals=${batch.totals.processedFiles}/${batch.totals.expectedFiles}`
